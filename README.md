@@ -1,31 +1,60 @@
-# build your docker
+# Rust ASR Project Guide
 
+## 🐳 Build Docker Image
+
+```bash
 docker build --no-cache --platform=linux/arm64 -t YourDockerAccountName/DockerName .
+```
 
-#How to run into a container
+## 🚪 Run into a Container and Mount Project
+
+```bash
 docker run -it \
- --name YourContainerName \
- -v $PWD/../rust_asr:/rust_asr \
- --net=host \
- -w /rust_asr \
- YourDockerAccountName/DockerName /bin/bash
+  --name YourContainerName \
+  -v $PWD/../rust_asr:/rust_asr \
+  --net=host \
+  -w /rust_asr \
+  YourDockerAccountName/DockerName /bin/bash
+```
 
-#How to run the rust asr demo
-cd onnx ./bash/run.sh (convert pth model to onnx model)
-cd data ./get_hello_world_wave.py
+## 🧪 Run the Rust ASR Demo
 
-#build rust demo and execute demo inference
+### 1. Convert PyTorch Model to ONNX
+
+```bash
+cd onnx
+./bash/run.sh
+```
+
+### 2. Download Test Data
+
+```bash
+cd data
+./get_hello_world_wave.py
+```
+
+## 🛠️ Build and Run Rust Inference Demo
+
+```bash
 ./run_asr.sh
+```
 
-#Check code format before commit
+## ✅ Check Code Format Before Commit (Using pre-commit)
 
-# 1. install pre-commit
+### 1. Install pre-commit
 
+```bash
 pip install pre-commit
+```
 
-# 2. install hook into .git/hooks/pre-commit
+### 2. Install Hook into .git/hooks/pre-commit
 
+```bash
 pre-commit install
+```
 
-#3.check all file
+### 3. Check All Files
+
+```bash
 pre-commit run --all-files
+```
