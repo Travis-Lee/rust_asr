@@ -1,13 +1,12 @@
-use ort::{environment::Environment, session::SessionBuilder, tensor::OrtOwnedTensor, Value};
-use std::sync::Arc;
-use ndarray::{Array3, Axis, CowArray, IxDyn}; // ✅ 删除未使用的 Array
 use anyhow::Result;
 use clap::Parser;
+use ndarray::{Array3, Axis, CowArray, IxDyn}; // ✅ 删除未使用的 Array
+use ort::{environment::Environment, session::SessionBuilder, tensor::OrtOwnedTensor, Value};
+use std::sync::Arc;
 
 const LABELS: [&str; 29] = [
-    "-", "|", "E", "T", "A", "O", "N", "I", "H", "S",
-    "R", "D", "L", "U", "M", "W", "C", "F", "G", "Y",
-    "P", "B", "V", "K", "'", "X", "J", "Q", "Z",
+    "-", "|", "E", "T", "A", "O", "N", "I", "H", "S", "R", "D", "L", "U", "M", "W", "C", "F", "G",
+    "Y", "P", "B", "V", "K", "'", "X", "J", "Q", "Z",
 ];
 
 fn argmax(arr: &[f32]) -> usize {
@@ -50,7 +49,7 @@ fn load_wav_mono(path: &str) -> Result<Vec<f32>> {
 #[derive(Parser, Debug)]
 #[command(author, version, about)]
 struct Args {
-    /// model path 
+    /// model path
     #[arg(short, long, default_value = "asr.onnx")]
     model: Option<String>,
     /// audio path
@@ -60,7 +59,7 @@ struct Args {
 
 fn main() -> Result<()> {
     let args = Args::parse();
-    
+
     let model_path = match &args.model {
         Some(p) => p,
         None => {
@@ -68,12 +67,12 @@ fn main() -> Result<()> {
             std::process::exit(1);
         }
     };
-    
+
     if !std::path::Path::new(model_path).exists() {
         eprintln!("❌ Model file does not exist: {model_path}"); // ✅ 改为内嵌写法
         std::process::exit(1);
     }
-    
+
     let audio_path = match &args.audio {
         Some(p) => p,
         None => {
@@ -81,7 +80,7 @@ fn main() -> Result<()> {
             std::process::exit(1);
         }
     };
-    
+
     if !std::path::Path::new(audio_path).exists() {
         eprintln!("❌ Audio file does not exist: {audio_path}"); // ✅ 改为内嵌写法
         std::process::exit(1);
@@ -89,11 +88,10 @@ fn main() -> Result<()> {
 
     // Building Inference ENV
     let environment = Arc::new(Environment::builder().with_name("asr").build()?);
-    let session = SessionBuilder::new(&environment)?
-        .with_model_from_file(model_path)?;
+    let session = SessionBuilder::new(&environment)?.with_model_from_file(model_path)?;
 
     // Reading WAV Audio
-    let audio_data = load_wav_mono(audio_path)?; 
+    let audio_data = load_wav_mono(audio_path)?;
     let audio_len = audio_data.len();
 
     let input_tensor: Array3<f32> = Array3::from_shape_vec((1, 1, audio_len), audio_data)?;
@@ -120,4 +118,3 @@ fn main() -> Result<()> {
 
     Ok(())
 }
-
