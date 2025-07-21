@@ -21,5 +21,4 @@ repos:
     hooks:
       - id: prettier
         files: \.md$  
-        args: [--prose-wrap=always, --print-width=80]  
 
