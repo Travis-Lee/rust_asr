@@ -19,3 +19,11 @@ cd data
 #build rust demo and execute demo inference
 ./run_asr.sh 
 
+#Check code format before commit 
+    # 1. install pre-commit
+    pip install pre-commit
+    # 2. install hook into .git/hooks/pre-commit
+    pre-commit install
+    # 3.check all file
+    pre-commit run --all-files
+
