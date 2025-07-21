@@ -1,6 +1,6 @@
 use ort::{environment::Environment, session::SessionBuilder, tensor::OrtOwnedTensor, Value};
 use std::sync::Arc;
-use ndarray::{Array, Array3, Axis, CowArray, IxDyn};
+use ndarray::{Array3, Axis, CowArray, IxDyn}; // ✅ 删除未使用的 Array
 use anyhow::Result;
 use clap::Parser;
 
@@ -47,7 +47,6 @@ fn load_wav_mono(path: &str) -> Result<Vec<f32>> {
     Ok(samples)
 }
 
-
 #[derive(Parser, Debug)]
 #[command(author, version, about)]
 struct Args {
@@ -71,7 +70,7 @@ fn main() -> Result<()> {
     };
     
     if !std::path::Path::new(model_path).exists() {
-        eprintln!("❌ Model file does not exist: {}", model_path);
+        eprintln!("❌ Model file does not exist: {model_path}"); // ✅ 改为内嵌写法
         std::process::exit(1);
     }
     
@@ -84,7 +83,7 @@ fn main() -> Result<()> {
     };
     
     if !std::path::Path::new(audio_path).exists() {
-        eprintln!("❌ Audio file does not exist: {}", audio_path);
+        eprintln!("❌ Audio file does not exist: {audio_path}"); // ✅ 改为内嵌写法
         std::process::exit(1);
     }
 
@@ -113,14 +112,12 @@ fn main() -> Result<()> {
         .map(|frame| argmax(frame.as_slice().unwrap()))
         .collect();
 
-    println!("pred_indices: {:?}", pred_indices);
+    println!("pred_indices: {pred_indices:?}"); // ✅
     let token_ids = remove_duplicates_and_blanks(&pred_indices, 0);
-    println!("token_ids: {:?}", token_ids);
+    println!("token_ids: {token_ids:?}"); // ✅
     let text: String = token_ids.iter().map(|&id| LABELS[id]).collect();
-    println!("🗣️ Inference Text: {}", text);
+    println!("🗣️ Inference Text: {text}"); // ✅
 
     Ok(())
 }
-
-
 
